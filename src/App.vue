@@ -1,15 +1,20 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img alt="Vue logo" src="./assets/logo.png">
+    <div class="container" style="width: 600px">
+        <div style="margin: 20px">
+            <h3>Vue Multiple Files Upload</h3>
+        </div>
+    </div>
+    <UploadFile />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import UploadFile from '@/components/UploadFiles.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+      UploadFile
   }
 }
 </script>
