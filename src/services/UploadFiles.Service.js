@@ -3,7 +3,9 @@ import http from "@/http-common"
 class UploadFilesService {
     upload(Module, UUID, file, onUploadProgress) {
         let formData=new FormData();
-        formData.append("files", file);
+        for (var i=0; i<file.length; i++) {
+            formData.append("files", file[i]);
+        }
         formData.append("module", Module);
         formData.append("fromuuid", UUID)
         return http.post("/upload", formData, {
@@ -16,6 +18,10 @@ class UploadFilesService {
 
     getFiles(Module, UUID) {
         return http.get("/files/"+Module+"/"+UUID);
+    }
+
+    deleteFile(UUID) {
+        return http.delete("/deletefile/"+UUID);
     }
 }
 
