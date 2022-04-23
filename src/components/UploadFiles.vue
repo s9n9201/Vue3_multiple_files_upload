@@ -31,6 +31,7 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" v-for="(file, index) in fileInfos" :key="index">
                     <a :href="file.url">{{ file.name }}</a>
+                    <button class="btn btn-danger" @click="deleteFile(file.url)">Delete</button>
                 </li>
             </ul>
         </div>
@@ -53,32 +54,47 @@ export default {
         };
     },
     methods: {
-        selectFile() {
+        selectFile(event) {
             this.progressInfos=[];
             this.selectedFiles=event.target.files;
+            console.log(this.selectedFiles);
         },
         uploadFiles() {
+            let arr=[];
             this.message="";
             for (let i=0; i<this.selectedFiles.length; i++) {
-                this.upload(i, this.selectedFiles[i]);
+                arr[i]=this.selectedFiles[i];
             }
+            this.upload(0, arr);
         },
         upload(idx, file) {
-            this.progressInfos[idx]={ percentage: 0, fileName: file.name };
+            this.progressInfos[idx]={ percentage: 0, fileName: file[0].name };
             UploadFilesService.upload(this.Module, this.UUID, file, (event)=> {
                 this.progressInfos[idx].percentage=Math.round(100 * event.loaded / event.total);
             })
-            .then((response)=>{
-                let prevMessage=this.message?this.message+"\n":"";
-                this.message=prevMessage+response.data.message;
-                return UploadFilesService.getFiles(this.Module, this.UUID);
-            })
+            .then(
+                (response)=>{
+                    let prevMessage=this.message?this.message+"\n":"";
+                    this.message=prevMessage+response.data.message;
+                    return UploadFilesService.getFiles(this.Module, this.UUID);
+                }
+            )
             .then((files)=>{
                 this.fileInfos=files.data;
             })
-            .catch(()=>{
-                this.progressInfors[idx].percentage=0;
-                this.message="Could not upload the file: "+file.name;
+            .catch((error)=>{
+                console.log(error.response.data.message);
+                this.progressInfos[idx].percentage=0;
+                this.message="Could not upload the file: "+file[0].name;
+            });
+        },
+        deleteFile(url) {
+            let UUID=url.split("/")[4];
+            UploadFilesService.deleteFile(UUID).then((response)=>{
+                this.message=response.data.message;
+                this.fileInfos=this.fileInfos.filter((file)=>{
+                    return file.url!=url? true : false;
+                });
             });
         }
     },
