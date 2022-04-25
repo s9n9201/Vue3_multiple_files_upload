@@ -1,20 +1,23 @@
 <template>
-    <img alt="Vue logo" src="./assets/logo.png">
+<!--    <img alt="Vue logo" src="./assets/logo.png">-->
     <div class="container" style="width: 600px">
         <div style="margin: 20px">
             <h3>Vue Multiple Files Upload</h3>
         </div>
     </div>
     <UploadFile />
+    <UploadImages />
 </template>
 
 <script>
 import UploadFile from '@/components/UploadFiles.vue'
+import UploadImages from "@/components/UploadImages";
 
 export default {
   name: 'App',
   components: {
-      UploadFile
+      UploadFile,
+      UploadImages
   }
 }
 </script>
